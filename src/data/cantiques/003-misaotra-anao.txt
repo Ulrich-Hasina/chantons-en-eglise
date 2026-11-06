@@ -1,6 +1,8 @@
 ---
 id: 3
 titre: Misaotra Anao
+groupe: messes
+sousgroupe: kyrie
 ---
 1. Misaotra Anao ry Ray be fitia,
 Noho ny soa rehetra nomenao.

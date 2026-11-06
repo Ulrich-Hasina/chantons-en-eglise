@@ -1,6 +1,8 @@
 ---
 id: 4
 titre: Andriamanitra ô
+groupe: messes
+sousgroupe: kyrie
 ---
 1. Andriamanitra ô, Ray be voninahitra,
 Ianao no mpanjakan'ny lanitra.

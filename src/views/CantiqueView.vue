@@ -6,6 +6,7 @@ import { livrets } from '../data/livrets'
 import { estFavori, basculerFavori } from '../utils/favoris'
 import fleche_de_retour from '../assets/fleche-gauche.png'
 import BoutonRecherche from '../components/BoutonRecherche.vue'
+import { groupeParId, sousGroupeParId } from '../data/groupes'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +14,21 @@ const router = useRouter()
 const cantique = computed(() =>
   cantiques.find((item) => item.id === Number(route.params.cantiqueId)),
 )
+
+// Étiquette la plus précise : sous-groupe s'il existe, sinon groupe
+const etiquette = computed(() => {
+  const c = cantique.value
+  if (!c) return null
+
+  if (c.sousGroupe) {
+    return {
+      nom: sousGroupeParId[c.sousGroupe].nom,
+      lien: `/groupe/${c.groupe}/${c.sousGroupe}`,
+    }
+  }
+
+  return { nom: groupeParId[c.groupe].nom, lien: `/groupe/${c.groupe}` }
+})
 
 const strophes = computed(() => {
   if (!cantique.value) return []
@@ -44,7 +60,11 @@ const page = computed(() => {
 })
 
 function retourner() {
-  router.push(`/livret/${route.params.livretId}`)
+  if (window.history.state?.back) {
+    router.back()
+  } else {
+    router.push(route.params.livretId ? `/livret/${route.params.livretId}` : '/')
+  }
 }
 
 // Gestion des favoris
@@ -144,21 +164,19 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="lecture" v-if="cantique && indexCantique >= 0">
+  <main class="lecture" v-if="cantique">
     <header>
       <div class="topbar">
-        <RouterLink
-          :to="`/livret/${route.params.livretId}`"
-          class="icone-bouton"
-          aria-label="Retour au livret"
-        >
+        <button class="icone-bouton" aria-label="Retour" @click="retourner">
           <img :src="fleche_de_retour" alt="" class="retour-icone" />
-        </RouterLink>
-
+        </button>
+        <div class="groupes" v-if="etiquette">
+          <RouterLink :to="etiquette.lien" class="groupe-etiquette">{{ etiquette.nom }}</RouterLink>
+        </div>
         <BoutonRecherche />
       </div>
 
-      <div class="informations">
+      <div class="informations" v-if="livret">
         <span>{{ livret?.nom }}</span>
         <span v-if="page">Page {{ page }}</span>
       </div>
@@ -189,7 +207,7 @@ onUnmounted(() => {
         <button @click="augmenterTexte" :disabled="tailleTexte >= 28">+</button>
       </div>
     </div>
-    <div class="navigation-cantiques">
+    <div class="navigation-cantiques" v-if="livret">
       <button @click="naviguerPrecedent" :disabled="!peutPrecedent">&lt;</button>
       <span>{{ cantique.titre }}</span>
       <button @click="naviguerSuivant" :disabled="!peutSuivant">&gt;</button>
@@ -376,5 +394,31 @@ h1 {
   font-style: italic;
   font-weight: 600;
   padding-left: 14px;
+}
+
+.groupes {
+  flex: 1;
+  min-width: 0; /* indispensable pour que le contenu puisse rétrécir dans un flex */
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.groupes::-webkit-scrollbar {
+  display: none;
+}
+
+.groupe-etiquette {
+  flex-shrink: 0;
+  white-space: nowrap;
+  background: #eef2ff;
+  color: black;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-decoration: none;
 }
 </style>

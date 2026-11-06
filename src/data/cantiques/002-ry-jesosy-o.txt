@@ -1,6 +1,7 @@
 ---
 id: 2
 titre: Ry Jesosy ô
+groupe: eucharistie
 ---
 1. Ry Jesosy ô, henoy ny vavakay,
 Ianao no fanantenanay.

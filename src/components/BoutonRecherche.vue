@@ -2,9 +2,9 @@
 import { computed, nextTick, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { cantiques } from '../data/cantiques'
-import { livrets } from '../data/livrets'
 import recherche_icon from '../assets/recherche.png'
 import { normaliser } from '../utils/texte'
+import { lienCantique } from '../utils/emplacements'
 
 const router = useRouter()
 
@@ -12,29 +12,10 @@ const recherche = ref('')
 const ouvert = ref(false)
 
 const resultats = computed(() => {
-  const terme = recherche.value.trim().toLowerCase()
+  const terme = normaliser(recherche.value.trim())
   if (!terme) return []
 
-  return cantiques
-    .filter((cantique) => normaliser(cantique.titre).includes(terme))
-    .map((cantique) => {
-      const emplacements = []
-
-      livrets.forEach((livret) => {
-        livret.pages.forEach((page) => {
-          if (page.cantiques.includes(cantique.id)) {
-            emplacements.push({
-              livretId: livret.id,
-              nom: livret.nom,
-              page: page.numero,
-            })
-          }
-        })
-      })
-
-      return { ...cantique, emplacements }
-    })
-    .filter((cantique) => cantique.emplacements.length > 0)
+  return cantiques.filter((cantique) => normaliser(cantique.titre).includes(terme))
 })
 
 const input = ref(null)
@@ -57,9 +38,9 @@ onUnmounted(() => {
   document.body.style.overflow = ''
 })
 
-function ouvrirCantique(cantique, emplacement) {
+function ouvrirCantique(cantique) {
   fermer()
-  router.push(`/livret/${emplacement.livretId}/cantique/${cantique.id}`)
+  router.push(lienCantique(cantique.id))
 }
 </script>
 
@@ -89,19 +70,15 @@ function ouvrirCantique(cantique, emplacement) {
         <div v-if="recherche.trim()" class="resultats">
           <p class="nombre">{{ resultats.length }} résultat(s)</p>
 
-          <div v-for="cantique in resultats" :key="cantique.id" class="resultat">
-            <strong>{{ cantique.titre }}</strong>
-
-            <button
-              v-for="emplacement in cantique.emplacements"
-              :key="`${cantique.id}-${emplacement.livretId}-${emplacement.page}`"
-              class="emplacement"
-              @click="ouvrirCantique(cantique, emplacement)"
-            >
-              {{ emplacement.nom }} — p. {{ emplacement.page }}
-              <span>›</span>
-            </button>
-          </div>
+          <button
+            v-for="cantique in resultats"
+            :key="cantique.id"
+            class="resultat"
+            @click="ouvrirCantique(cantique)"
+          >
+            <span>{{ cantique.titre }}</span>
+            <span class="fleche-resultat">›</span>
+          </button>
 
           <p v-if="resultats.length === 0" class="vide">Aucun cantique trouvé.</p>
         </div>
@@ -185,27 +162,22 @@ function ouvrirCantique(cantique, emplacement) {
 }
 
 .resultat {
-  padding: 15px 0;
-  border-bottom: 1px solid #e8edf2;
-}
-
-.resultat strong {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.emplacement {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 11px;
-  margin-top: 5px;
+  align-items: center;
+  padding: 15px 4px;
   border: none;
-  border-radius: 7px;
-  background: #f0f4fa;
-  color: #2563eb;
+  border-bottom: 1px solid #e8edf2;
+  background: transparent;
+  font-size: 15px;
   text-align: left;
   cursor: pointer;
+}
+
+.fleche-resultat {
+  font-size: 22px;
+  color: #718096;
 }
 
 .message,

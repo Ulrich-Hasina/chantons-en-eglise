@@ -1,6 +1,7 @@
 ---
 id: 6
 titre: Ry Fanahy Masina
+groupe: eucharistie
 ---
 1. Ry Fanahy Masina ô,
 Tongava mitoetra ato aminay.

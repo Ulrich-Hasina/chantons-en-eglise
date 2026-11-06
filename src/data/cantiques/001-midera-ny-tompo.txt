@@ -1,6 +1,7 @@
 ---
 id: 1
 titre: Miderà ny Tompo
+groupe: eucharistie
 ---
 1. Andao isika hidera ny Tompo,
 Fa lehibe ny fitiavany.

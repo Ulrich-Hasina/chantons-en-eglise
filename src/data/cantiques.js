@@ -1,3 +1,5 @@
+import { groupeParId, sousGroupeParId, parentDe } from './groupes'
+
 const fichiers = import.meta.glob('./cantiques/*.txt', {
   query: '?raw',
   import: 'default',
@@ -34,7 +36,47 @@ function lire(chemin, brut) {
     return null
   }
 
-  return { id, titre: meta.titre, paroles }
+  // Anciens champs au pluriel : à corriger dans le fichier
+  if (meta.groupes || meta.sousgroupes) {
+    console.warn(
+      `[cantiques] "groupes"/"sousgroupes" remplacés par "groupe"/"sousgroupe" : ${chemin}`,
+    )
+  }
+
+  const groupe = meta.groupe
+  const sousGroupe = meta.sousgroupe || null
+
+  if (!groupe || !groupeParId[groupe]) {
+    console.warn(`[cantiques] groupe manquant ou inconnu ("${groupe}") : ${chemin}`)
+    return null
+  }
+
+  if (sousGroupe) {
+    if (!sousGroupeParId[sousGroupe]) {
+      console.warn(`[cantiques] sous-groupe inconnu ("${sousGroupe}") : ${chemin}`)
+      return null
+    }
+    if (parentDe[sousGroupe] !== groupe) {
+      console.warn(
+        `[cantiques] le sous-groupe "${sousGroupe}" appartient à "${parentDe[sousGroupe]}" et non à "${groupe}" : ${chemin}`,
+      )
+      return null
+    }
+  } else if (groupeParId[groupe].sousGroupes.length) {
+    // Accepté, mais le chant apparaîtra dans « Autres chants de ce groupe »
+    console.warn(`[cantiques] sous-groupe conseillé pour le groupe "${groupe}" : ${chemin}`)
+  }
+
+  return {
+    id,
+    titre: meta.titre,
+    groupe,
+    sousGroupe,
+    // Forme en liste conservée pour que le reste de l'app n'ait rien à changer
+    groupes: [groupe],
+    sousGroupes: sousGroupe ? [sousGroupe] : [],
+    paroles,
+  }
 }
 
 export const cantiques = Object.entries(fichiers)
@@ -42,7 +84,6 @@ export const cantiques = Object.entries(fichiers)
   .filter(Boolean)
   .sort((a, b) => a.id - b.id)
 
-// Vérifications utiles pendant la saisie (uniquement en développement)
 if (import.meta.env.DEV) {
   const vus = new Set()
   cantiques.forEach((c) => {

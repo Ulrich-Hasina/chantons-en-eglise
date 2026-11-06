@@ -6,6 +6,7 @@ import { livrets } from '../data/livrets'
 // import { modeSombre, basculerTheme } from '../utils/theme'
 import chantons_en_eglise from '../assets/chantons_en_eglise.jpeg'
 import recherche_icon from '../assets/recherche.png'
+import { lienCantique } from '../utils/emplacements'
 
 const router = useRouter()
 
@@ -33,26 +34,7 @@ const resultats = computed(() => {
 
   if (!terme) return []
 
-  return cantiques
-    .filter((cantique) => cantique.titre.toLowerCase().includes(terme))
-    .map((cantique) => {
-      const emplacements = []
-
-      livrets.forEach((livret) => {
-        livret.pages.forEach((page) => {
-          if (page.cantiques.includes(cantique.id)) {
-            emplacements.push({
-              livretId: livret.id,
-              nom: livret.nom,
-              page: page.numero,
-            })
-          }
-        })
-      })
-
-      return { ...cantique, emplacements }
-    })
-    .filter((cantique) => cantique.emplacements.length > 0)
+  return cantiques.filter((cantique) => cantique.titre.toLowerCase().includes(terme))
 })
 
 function ouvrirLivret(id) {
@@ -60,9 +42,9 @@ function ouvrirLivret(id) {
   router.push(`/livret/${id}`)
 }
 
-function ouvrirCantique(cantique, emplacement) {
+function ouvrirCantique(cantique) {
   rechercheOuverte.value = false
-  router.push(`/livret/${emplacement.livretId}/cantique/${cantique.id}`)
+  router.push(lienCantique(cantique.id))
 }
 
 function ouvrirRecherche() {
@@ -78,6 +60,11 @@ function fermerRecherche() {
 function ouvrirFavoris() {
   menuOuvert.value = false
   router.push('/favoris')
+}
+
+function ouvrirGroupes() {
+  menuOuvert.value = false
+  router.push('/groupes')
 }
 </script>
 
@@ -126,11 +113,9 @@ function ouvrirFavoris() {
     <div v-if="menuOuvert" class="overlay" @click.self="menuOuvert = false">
       <aside class="menu-panel">
         <div class="menu-header">
-          <strong>Menu</strong>
+          <strong>Chantons en Eglise</strong>
           <button @click="menuOuvert = false">✕</button>
         </div>
-
-        <button class="menu-item" @click="menuOuvert = false"><span>⌂</span> Accueil</button>
         <button class="menu-item" @click="ouvrirFavoris">
           <span>❤️</span>
           Mes favoris
@@ -144,6 +129,10 @@ function ouvrirFavoris() {
         >
           <span>{{ livret.emoji }}</span>
           {{ livret.nom }}
+        </button>
+        <button class="menu-item" @click="ouvrirGroupes">
+          <span>♪</span>
+          Groupes
         </button>
         <!-- <button class="bouton-theme" @click="basculerTheme">
           {{ modeSombre ? '☀️ Mode clair' : '🌙 Mode sombre' }}
@@ -170,19 +159,14 @@ function ouvrirFavoris() {
         <div v-if="recherche.trim()" class="resultats">
           <p class="nombre">{{ resultats.length }} résultat(s)</p>
 
-          <div v-for="cantique in resultats" :key="cantique.id" class="resultat">
-            <strong>{{ cantique.titre }}</strong>
-
-            <button
-              v-for="emplacement in cantique.emplacements"
-              :key="`${cantique.id}-${emplacement.livretId}-${emplacement.page}`"
-              class="emplacement"
-              @click="ouvrirCantique(cantique, emplacement)"
-            >
-              {{ emplacement.nom }} — p. {{ emplacement.page }}
-              <span>›</span>
-            </button>
-          </div>
+          <button
+            v-for="cantique in resultats"
+            :key="cantique.id"
+            class="resultat"
+            @click="ouvrirCantique(cantique)"
+          >
+            <span>{{ cantique.titre }}</span>
+          </button>
 
           <p v-if="resultats.length === 0" class="vide">Aucun cantique trouvé.</p>
         </div>
@@ -313,6 +297,7 @@ footer {
   background: white;
   padding: 25px 18px;
   animation: entrer 0.2s ease;
+  overflow-y: auto;
 }
 
 .menu-header,
@@ -349,6 +334,15 @@ footer {
   cursor: pointer;
 }
 
+.menu-titre {
+  margin: 22px 10px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #718096;
+}
+
 /* Modal recherche */
 .recherche-modal {
   width: min(500px, calc(100% - 30px));
@@ -383,29 +377,23 @@ footer {
   color: #718096;
   font-size: 13px;
 }
-
 .resultat {
-  padding: 15px 0;
-  border-bottom: 1px solid #e8edf2;
-}
-
-.resultat strong {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.emplacement {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 11px;
-  margin-top: 5px;
+  align-items: center;
+  padding: 15px 4px;
   border: none;
-  border-radius: 7px;
-  background: #f0f4fa;
-  color: #2563eb;
+  border-bottom: 1px solid #e8edf2;
+  background: transparent;
+  font-size: 15px;
   text-align: left;
   cursor: pointer;
+}
+
+.fleche-resultat {
+  font-size: 22px;
+  color: #718096;
 }
 
 .message,

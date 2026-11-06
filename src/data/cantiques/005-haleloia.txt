@@ -1,6 +1,7 @@
 ---
 id: 5
 titre: Haleloia
+groupe: eucharistie
 ---
 1. Haleloia, haleloia,
 Dera sy laza ho Anao.

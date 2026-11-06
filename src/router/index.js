@@ -22,6 +22,22 @@ const routes = [
     component: () => import('../views/FavorisView.vue'),
   },
   {
+    path: '/groupes',
+    component: () => import('../views/GroupesView.vue'),
+  },
+  {
+    path: '/groupe/:groupeId',
+    component: () => import('../views/GroupeView.vue'),
+  },
+  {
+    path: '/cantique/:cantiqueId',
+    component: () => import('../views/CantiqueView.vue'),
+  },
+  {
+    path: '/groupe/:groupeId/:sousGroupeId?',
+    component: () => import('../views/GroupeView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },

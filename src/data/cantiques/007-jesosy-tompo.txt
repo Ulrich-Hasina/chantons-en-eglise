@@ -1,6 +1,7 @@
 ---
 id: 7
 titre: Jesosy Tompo
+groupe: eucharistie
 ---
 1. Jesosy Tompo ô, Ianao no lalana,
 Ianao no fahamarinana sy aina.

@@ -2,47 +2,25 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { cantiques } from '../data/cantiques'
-import { livrets } from '../data/livrets'
 import { getFavoris, basculerFavori } from '../utils/favoris'
+import { lienCantique } from '../utils/emplacements'
 import BoutonRecherche from '../components/BoutonRecherche.vue'
 import fleche_de_retour from '../assets/fleche-gauche.png'
 
 const router = useRouter()
 const favoris = ref(getFavoris())
 
-const listeFavoris = computed(() => {
-  return favoris.value
-    .map((id) => {
-      const cantique = cantiques.find((item) => item.id === id)
-
-      if (!cantique) return null
-
-      const emplacements = []
-
-      livrets.forEach((livret) => {
-        livret.pages.forEach((page) => {
-          if (page.cantiques.includes(id)) {
-            emplacements.push({
-              livretId: livret.id,
-              nom: livret.nom,
-              page: page.numero,
-            })
-          }
-        })
-      })
-
-      return { ...cantique, emplacements }
-    })
-    .filter(Boolean)
-})
+const listeFavoris = computed(() =>
+  favoris.value.map((id) => cantiques.find((item) => item.id === id)).filter(Boolean),
+)
 
 function retirerFavori(id) {
   basculerFavori(id)
   favoris.value = getFavoris()
 }
 
-function ouvrirCantique(cantique, emplacement) {
-  router.push(`/livret/${emplacement.livretId}/cantique/${cantique.id}`)
+function ouvrirCantique(cantique) {
+  router.push(lienCantique(cantique.id))
 }
 </script>
 
@@ -56,31 +34,18 @@ function ouvrirCantique(cantique, emplacement) {
       <BoutonRecherche />
     </header>
 
-    <h1>❤️ Mes favoris</h1>
+    <h1>Mes favoris</h1>
 
     <p class="description">{{ listeFavoris.length }} cantique(s) enregistré(s)</p>
 
     <section v-if="listeFavoris.length">
       <article v-for="cantique in listeFavoris" :key="cantique.id" class="favori-card">
-        <div class="titre">
-          <strong>{{ cantique.titre }}</strong>
+        <button class="titre-bouton" @click="ouvrirCantique(cantique)">
+          {{ cantique.titre }}
+        </button>
 
-          <button
-            class="coeur"
-            @click="retirerFavori(cantique.id)"
-            aria-label="Retirer des favoris"
-          >
-            ♥
-          </button>
-        </div>
-
-        <button
-          v-for="emplacement in cantique.emplacements"
-          :key="`${cantique.id}-${emplacement.livretId}-${emplacement.page}`"
-          class="emplacement"
-          @click="ouvrirCantique(cantique, emplacement)"
-        >
-          {{ emplacement.nom }} — p. {{ emplacement.page }} →
+        <button class="etoile" @click="retirerFavori(cantique.id)" aria-label="Retirer des favoris">
+          ★
         </button>
       </article>
     </section>
@@ -135,50 +100,46 @@ h1 {
   margin-bottom: 25px;
 }
 
-.favori-card {
-  padding: 16px 12px;
-  border-bottom: 1px solid #e8edf2;
-}
-
-.titre {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.titre strong {
-  font-size: 16px;
-}
-
-.coeur {
+.etoile {
   border: none;
   background: transparent;
-  color: #e54862;
-  font-size: 25px;
+  color: #ffc107;
+  font-size: 26px;
+  line-height: 1;
+  padding: 8px 12px;
   cursor: pointer;
 }
 
-.emplacement {
-  width: 100%;
-  padding: 11px;
-  margin-top: 5px;
+.grande-etoile {
+  font-size: 65px;
+  color: #ffc107;
+}
+
+.favori-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #e8edf2;
+}
+
+.titre-bouton {
+  flex: 1;
+  padding: 16px 12px;
   border: none;
-  border-radius: 7px;
-  background: #f0f4fa;
-  color: #2563eb;
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
   text-align: left;
   cursor: pointer;
 }
 
+.titre-bouton:hover {
+  background: #f8fafc;
+}
 .vide {
   text-align: center;
   margin-top: 80px;
   color: #718096;
-}
-
-.grand-coeur {
-  font-size: 65px;
-  color: #e54862;
 }
 </style>
