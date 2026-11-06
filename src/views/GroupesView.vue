@@ -22,11 +22,9 @@ const liste = computed(() =>
       <RouterLink to="/" class="icone-bouton" aria-label="Retour à l'accueil">
         <img :src="fleche_de_retour" alt="" class="retour-icone" />
       </RouterLink>
-
+      <h2 class="groupes-titre">Groupes</h2>
       <BoutonRecherche />
     </div>
-
-    <h1>Groupes</h1>
 
     <button
       v-for="groupe in liste"
@@ -48,7 +46,6 @@ const liste = computed(() =>
   max-width: 600px;
   min-height: 100vh;
   margin: auto;
-  padding: 25px 22px 40px;
   font-family: Arial, sans-serif;
   color: #263238;
 }
@@ -57,6 +54,7 @@ const liste = computed(() =>
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 25px;
 }
 
 .icone-bouton {
@@ -71,9 +69,11 @@ const liste = computed(() =>
   height: 22px;
 }
 
-h1 {
+.groupes-titre {
+  flex: 1;
+  text-align: center;
   font-size: 25px;
-  margin: 25px 0 20px;
+  margin: 0;
 }
 
 .groupe-card {

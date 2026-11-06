@@ -30,13 +30,9 @@ function ouvrirCantique(cantique) {
       <RouterLink to="/" class="icone-bouton" aria-label="Retour">
         <img :src="fleche_de_retour" alt="Retour" class="retour-icone" />
       </RouterLink>
-
+      <h2>Mes favoris</h2>
       <BoutonRecherche />
     </header>
-
-    <h1>Mes favoris</h1>
-
-    <p class="description">{{ listeFavoris.length }} cantique(s) enregistré(s)</p>
 
     <section v-if="listeFavoris.length">
       <article v-for="cantique in listeFavoris" :key="cantique.id" class="favori-card">
@@ -63,7 +59,6 @@ function ouvrirCantique(cantique) {
   max-width: 600px;
   min-height: 100vh;
   margin: auto;
-  padding: 25px 20px;
   font-family: Arial, sans-serif;
   color: #263238;
 }
@@ -72,6 +67,7 @@ function ouvrirCantique(cantique) {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 25px;
 }
 
 .icone-bouton {
@@ -141,5 +137,6 @@ h1 {
   text-align: center;
   margin-top: 80px;
   color: #718096;
+  padding: 0 15px 0 15px;
 }
 </style>

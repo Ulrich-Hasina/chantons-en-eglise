@@ -13,10 +13,14 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
     "vue": "rc",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.6.10",
     "@eslint/css": "^2.0.1",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.1.1",

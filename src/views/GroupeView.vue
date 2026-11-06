@@ -80,12 +80,11 @@ watch(
       <button class="icone-bouton" aria-label="Retour" @click="retourner">
         <img :src="fleche_de_retour" alt="" class="retour-icone" />
       </button>
-
+      <h2>
+        <span v-if="sousGroupe">{{ groupe.nom }} - </span>{{ titre }}
+      </h2>
       <BoutonRecherche />
     </div>
-
-    <p v-if="sousGroupe" class="fil">{{ groupe.nom }}</p>
-    <h1>{{ titre }}</h1>
 
     <!-- Liste des sous-groupes -->
     <template v-if="afficheSousGroupes">
@@ -117,8 +116,6 @@ watch(
 
     <!-- Liste des chants -->
     <template v-else>
-      <p class="nombre">{{ chants.length }} chant(s)</p>
-
       <button
         v-for="chant in chants"
         :key="chant.id"
@@ -143,7 +140,6 @@ watch(
   max-width: 600px;
   min-height: 100vh;
   margin: auto;
-  padding: 25px 22px 40px;
   font-family: Arial, sans-serif;
   color: #263238;
 }
@@ -152,6 +148,7 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 25px;
 }
 
 .icone-bouton {
@@ -200,7 +197,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 4px;
+  padding: 16px 15px 16px 15px;
   border: none;
   border-bottom: 1px solid #e8edf2;
   background: transparent;

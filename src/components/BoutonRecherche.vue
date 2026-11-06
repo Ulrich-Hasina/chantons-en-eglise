@@ -1,5 +1,6 @@
 <script setup>
-import { computed, nextTick, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
+import { empiler, depiler } from '../utils/retourAndroid'
 import { useRouter } from 'vue-router'
 import { cantiques } from '../data/cantiques'
 import recherche_icon from '../assets/recherche.png'
@@ -34,8 +35,14 @@ function fermer() {
   document.body.style.overflow = ''
 }
 
+watch(ouvert, (valeur) => {
+  if (valeur) empiler(fermer)
+  else depiler(fermer)
+})
+
 onUnmounted(() => {
   document.body.style.overflow = ''
+  depiler(fermer)
 })
 
 function ouvrirCantique(cantique) {

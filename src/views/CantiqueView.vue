@@ -175,14 +175,13 @@ onUnmounted(() => {
         </div>
         <BoutonRecherche />
       </div>
-
       <div class="informations" v-if="livret">
         <span>{{ livret?.nom }}</span>
         <span v-if="page">Page {{ page }}</span>
       </div>
 
       <div class="titre-container">
-        <h1>{{ cantique.titre }}</h1>
+        <h2>{{ cantique.titre }}</h2>
         <button class="bouton-favori" :class="{ actif: favori }" @click="changerFavori">
           {{ favori ? '★' : '☆' }}
         </button>
@@ -225,7 +224,7 @@ onUnmounted(() => {
   max-width: 600px;
   min-height: 100vh;
   margin: auto;
-  padding: 25px 22px 40px;
+  /* padding: 25px 22px 40px; */
   font-family: Arial, sans-serif;
   color: #263238;
 }
@@ -235,6 +234,7 @@ onUnmounted(() => {
   justify-content: space-between;
   margin-top: 25px;
   margin-bottom: 25px;
+  padding: 0 15px 0 15px;
   color: #718096;
   font-size: 13px;
 }
@@ -249,6 +249,7 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 0 15px 0 15px;
 }
 
 .titre-container h1 {
@@ -382,7 +383,7 @@ h1 {
 .paroles {
   line-height: 1.9;
   color: #374151;
-  padding: 10px 4px;
+  padding: 0 15px 0 15px;
 }
 
 .strophe {

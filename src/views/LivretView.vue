@@ -45,7 +45,7 @@ const cantiquesFiltres = computed(() => {
         <img :src="fleche_de_retour" alt="" class="retour-icone" />
       </button>
 
-      <h1 class="titre-livret">{{ livret.nom }}</h1>
+      <h2 class="titre-livret">{{ livret.nom }}</h2>
 
       <BoutonRecherche />
     </header>
@@ -83,7 +83,6 @@ const cantiquesFiltres = computed(() => {
   max-width: 600px;
   min-height: 100dvh;
   margin: auto;
-  padding: 25px 20px;
   font-family: Arial, sans-serif;
   color: #263238;
 }

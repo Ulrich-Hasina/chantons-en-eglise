@@ -1,10 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
+import { empiler, depiler } from '../utils/retourAndroid'
 import { useRouter } from 'vue-router'
 import { cantiques } from '../data/cantiques'
 import { livrets } from '../data/livrets'
 // import { modeSombre, basculerTheme } from '../utils/theme'
-import chantons_en_eglise from '../assets/chantons_en_eglise.jpeg'
+import chantons_en_eglise from '../assets/chantons_en_eglise.png'
 import recherche_icon from '../assets/recherche.png'
 import { lienCantique } from '../utils/emplacements'
 
@@ -66,6 +67,25 @@ function ouvrirGroupes() {
   menuOuvert.value = false
   router.push('/groupes')
 }
+
+function fermerMenu() {
+  menuOuvert.value = false
+}
+
+watch(menuOuvert, (valeur) => {
+  if (valeur) empiler(fermerMenu)
+  else depiler(fermerMenu)
+})
+
+watch(rechercheOuverte, (valeur) => {
+  if (valeur) empiler(fermerRecherche)
+  else depiler(fermerRecherche)
+})
+
+onUnmounted(() => {
+  depiler(fermerMenu)
+  depiler(fermerRecherche)
+})
 </script>
 
 <template>
